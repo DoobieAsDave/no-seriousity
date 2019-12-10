@@ -47,11 +47,12 @@ function void modFilterFreq(LPF filter, dur modTime, float min, float max, float
 //
 
 while(true) {  
-    for (0 => int beat; beat < 2; beat++) {
-        tempo.note * 16 => now;
+    tempo.note * 16 => now;
 
+    for (0 => int beat; beat < 2; beat++) {
         //    
-        if (beat == 1) spork ~ modFilterFreq(filter, tempo.quarterNote, 50 => Std.mtof, 88 => Std.mtof, .1) @=> filterFreqShred;
+        if (beat == 0) spork ~ modFilterFreq(filter, tempo.note, 50 => Std.mtof, 88 => Std.mtof, .5) @=> filterFreqShred;
+        else if (beat == 1) spork ~ modFilterFreq(filter, tempo.quarterNote, 50 => Std.mtof, 88 => Std.mtof, .1) @=> filterFreqShred;
 
         tempo.halfNote => envelope.duration;
         swipeFreq(origin => Std.mtof, target => Std.mtof);    
@@ -90,7 +91,7 @@ while(true) {
         swipeFreq(envelope.target(), origin => Std.mtof);    
         (tempo.note * .5) - envelope.duration() => now; // 8
         
-        if (beat == 1) Machine.remove(filterFreqShred.id());
+        Machine.remove(filterFreqShred.id());
     }
 }
 
